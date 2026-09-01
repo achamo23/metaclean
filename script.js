@@ -25,47 +25,69 @@ fileInput.addEventListener("change", () => addFiles([...fileInput.files]));
 dropzone.addEventListener("drop", e => addFiles([...e.dataTransfer.files]));
 
 clearBtn.addEventListener("click", () => {
+  items.forEach(x => { if (x.url) URL.revokeObjectURL(x.url); if (x.resultUrl) URL.revokeObjectURL(x.resultUrl); });
   items = []; fileInput.value = ""; render();
 });
 
 function addFiles(files) {
-  const accepted = files.filter(f => /^image\/(jpeg|png|webp|gif|bmp)$/.test(f.type));
+  const accepted = files.filter(f => isSupported(f));
   accepted.forEach(file => {
     if (!items.some(x => x.file.name === file.name && x.file.size === file.size && x.file.lastModified === file.lastModified)) {
-      items.push({file, png:null, webp:null, url:URL.createObjectURL(file), status:"processing"});
+      items.push({file, url:URL.createObjectURL(file), resultUrl:null, png:null, webp:null, status:"processing"});
     }
   });
   render();
-  accepted.forEach((_, i) => processItem(items.length - accepted.length + i));
+  const start = items.length - accepted.length;
+  accepted.forEach((_, i) => processItem(start + i));
+}
+
+function isSupported(file) {
+  return /^image\/(jpeg|png|webp|gif|bmp|heic|heif)$/.test(file.type) || /\.(jpe?g|png|webp|gif|bmp|heic|heif)$/i.test(file.name);
 }
 
 async function processItem(index) {
   const item = items[index];
   if (!item) return;
   try {
-    const img = await loadImage(item.file);
+    const source = await getDecodableSource(item.file);
+    const img = await loadImage(source);
     const canvas = document.createElement("canvas");
     canvas.width = img.naturalWidth;
     canvas.height = img.naturalHeight;
-    const ctx = canvas.getContext("2d", {alpha:true, willReadFrequently:false});
+    const ctx = canvas.getContext("2d", {alpha:true});
     ctx.drawImage(img, 0, 0);
     item.width = img.naturalWidth;
     item.height = img.naturalHeight;
     item.png = await canvasToBlob(canvas, "image/png");
     item.webp = await canvasToBlob(canvas, "image/webp", .92);
+    item.resultUrl = URL.createObjectURL(item.png);
     item.status = "done";
+    if (source instanceof Blob && source !== item.file) URL.revokeObjectURL(source instanceof File ? source : source);
   } catch (err) {
     console.error(err);
     item.status = "error";
-    item.error = "브라우저에서 읽을 수 없는 이미지입니다.";
+    item.error = isHeic(item.file) ? "HEIC 변환에 실패했어요. Safari/Chrome을 최신 버전으로 사용해 주세요." : "이 이미지를 처리하지 못했어요.";
   }
   render();
 }
 
-function loadImage(file) {
+async function getDecodableSource(file) {
+  if (isHeic(file)) {
+    if (typeof heic2any !== "function") throw new Error("HEIC decoder unavailable");
+    const converted = await heic2any({ blob:file, toType:"image/png", quality:1 });
+    return Array.isArray(converted) ? converted[0] : converted;
+  }
+  return file;
+}
+
+function isHeic(file) {
+  return file.type === "image/heic" || file.type === "image/heif" || /\.(heic|heif)$/i.test(file.name);
+}
+
+function loadImage(source) {
   return new Promise((resolve, reject) => {
     const img = new Image();
-    const url = URL.createObjectURL(file);
+    const url = URL.createObjectURL(source);
     img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
     img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("decode failed")); };
     img.src = url;
@@ -81,39 +103,57 @@ function canvasToBlob(canvas, type, quality) {
 function render() {
   const has = items.length > 0;
   toolbar.classList.toggle("hidden", !has);
-  actions.classList.toggle("hidden", !has);
   count.textContent = items.length;
   list.innerHTML = "";
-  items.forEach((item, i) => {
+  items.forEach(item => {
     const row = document.createElement("div");
     row.className = "file-item";
-    const thumb = document.createElement("img");
-    thumb.className = "thumb";
-    thumb.src = item.url;
-    thumb.alt = "";
-    const middle = document.createElement("div");
-    middle.innerHTML = `<div class="file-name">${escapeHtml(item.file.name)}</div>
-      <div class="file-meta">${formatBytes(item.file.size)}${item.width ? ` · ${item.width}×${item.height}` : ""}</div>`;
+
+    const compare = document.createElement("div");
+    compare.className = "compare";
+    compare.appendChild(previewBox(item.url, "원본"));
+    compare.appendChild(previewBox(item.resultUrl || item.url, "메타데이터 제거 후", true));
+
+    const info = document.createElement("div");
+    info.className = "file-info";
+    const text = document.createElement("div");
+    text.innerHTML = `<div class="file-name">${escapeHtml(item.file.name)}</div>
+      <div class="file-meta">${formatBytes(item.file.size)}${item.width ? ` · ${item.width}×${item.height}` : ""}${isHeic(item.file) ? " · HEIC 변환" : ""}</div>`;
     const status = document.createElement("div");
     status.className = "status" + (item.status === "error" ? " error" : "");
     status.textContent = item.status === "done" ? "✓ 제거됨" : item.status === "error" ? "처리 실패" : "처리 중…";
-    row.append(thumb, middle, status);
+    info.append(text, status);
+    row.append(compare, info);
     list.appendChild(row);
   });
   const ready = items.some(x => x.status === "done");
   actions.classList.toggle("hidden", !ready);
 }
 
+function previewBox(url, label, result=false) {
+  const box = document.createElement("div");
+  box.className = "preview-box";
+  const tag = document.createElement("span");
+  tag.className = "preview-label" + (result ? " result" : "");
+  tag.textContent = label;
+  const img = document.createElement("img");
+  img.className = "preview";
+  img.src = url;
+  img.alt = label;
+  box.append(tag, img);
+  return box;
+}
+
 async function downloadAll(format) {
   const ready = items.filter(x => x.status === "done" && x[format]);
   if (!ready.length) return;
-  const ext = format === "png" ? "png" : "webp";
+  const ext = format;
   if (ready.length === 1) {
     const a = document.createElement("a");
     a.href = URL.createObjectURL(ready[0][format]);
     a.download = cleanName(ready[0].file.name) + "." + ext;
     a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    setTimeout(() => URL.revokeObjectURL(a.href), 1200);
     return;
   }
   const zip = new JSZip();
@@ -128,27 +168,19 @@ async function downloadAll(format) {
   const blob = await zip.generateAsync({type:"blob", compression:"DEFLATE"});
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = `metaclean-${ext}-${dateStamp()}.zip`;
+  a.download = `pinkclean-${ext}-${dateStamp()}.zip`;
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 1500);
 }
-
 downloadPng.addEventListener("click", () => downloadAll("png"));
 downloadWebp.addEventListener("click", () => downloadAll("webp"));
 
-function cleanName(name) {
-  return name.replace(/\.[^/.]+$/, "") || "image";
-}
+function cleanName(name) { return name.replace(/\.[^/.]+$/, "") || "image"; }
 function formatBytes(bytes) {
   if (bytes < 1024) return bytes + " B";
   if (bytes < 1024**2) return (bytes/1024).toFixed(1) + " KB";
   return (bytes/1024**2).toFixed(2) + " MB";
 }
-function dateStamp() {
-  return new Date().toISOString().slice(0,10);
-}
-function escapeHtml(s) {
-  return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
-}
-
+function dateStamp() { return new Date().toISOString().slice(0,10); }
+function escapeHtml(s) { return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c])); }
 render();

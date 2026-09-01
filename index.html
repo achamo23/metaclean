@@ -3,8 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="사진의 EXIF와 위치 정보를 브라우저에서 안전하게 제거합니다.">
-  <title>MetaClean — 이미지 메타데이터 제거</title>
+  <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+  <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
+  <meta name="description" content="사진의 EXIF와 메타데이터를 브라우저에서 안전하게 제거합니다.">
+  <title>pinkclean — 사진 메타데이터 지우기</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -12,62 +14,67 @@
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="./"><span class="brand-mark">M</span><span>MetaClean</span></a>
-    <span class="privacy-pill">● 100% 로컬 처리</span>
+    <a class="brand" href="./" aria-label="pinkclean 홈">
+      <span class="brand-heart">♡</span><span>pinkclean</span>
+    </a>
+    <div class="privacy-pill">🔒 사진은 업로드되지 않아요</div>
   </header>
 
   <main>
     <section class="hero">
+      <div class="sparkle">✦</div>
       <div class="eyebrow">PRIVATE IMAGE CLEANER</div>
-      <h1>사진에 남아 있는<br><em>정보를 깨끗하게.</em></h1>
-      <p>EXIF, GPS 위치, 촬영 정보 같은 이미지 메타데이터를<br class="desktop"> 브라우저에서 제거하고 새 이미지로 저장합니다.</p>
+      <h1>사진 속 <span>흔적</span>을<br>말끔하게 지워요.</h1>
+      <p>EXIF · GPS · 촬영 정보 등 사진에 숨어 있는<br class="desktop"> 메타데이터를 내 기기에서만 안전하게 제거해요.</p>
     </section>
 
     <section class="app-card">
       <div id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="이미지 선택 영역">
-        <div class="upload-icon">↑</div>
-        <h2>이미지를 여기에 놓으세요</h2>
-        <p>또는 아래 버튼을 눌러 파일을 선택하세요</p>
-        <button id="selectBtn" class="primary" type="button">이미지 선택</button>
-        <input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/bmp" multiple hidden>
-        <small>JPG · JPEG · PNG · WebP · GIF · BMP · 여러 장 선택 가능</small>
+        <div class="upload-icon">♡</div>
+        <h2>사진을 톡 놓아주세요</h2>
+        <p>여기에 끌어놓거나 아래에서 사진을 골라주세요</p>
+        <button id="selectBtn" class="primary" type="button">사진 선택하기</button>
+        <input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/bmp,image/heic,image/heif,.heic,.heif" multiple hidden>
+        <small>JPG · PNG · WebP · GIF · BMP · HEIC · HEIF · 여러 장 가능</small>
       </div>
 
       <div id="toolbar" class="toolbar hidden">
-        <div><strong id="count">0</strong>개의 이미지가 선택됨</div>
-        <button id="clearBtn" class="text-btn" type="button">전체 지우기</button>
+        <div><strong id="count">0</strong>개의 사진</div>
+        <button id="clearBtn" class="text-btn" type="button">전부 지우기</button>
       </div>
 
       <div id="list" class="file-list"></div>
 
       <div id="actions" class="actions hidden">
         <div class="action-head">
+          <div class="check">✓</div>
           <div>
-            <h3>메타데이터 제거 완료</h3>
-            <p>새로 인코딩된 파일에는 원본 EXIF 정보가 포함되지 않습니다.</p>
+            <h3>깨끗해졌어요!</h3>
+            <p>원본 메타데이터를 제거한 새 이미지가 준비됐어요.</p>
           </div>
         </div>
         <div class="action-buttons">
-          <button id="downloadPng" class="primary big" type="button">PNG로 전체 다운로드</button>
-          <button id="downloadWebp" class="secondary big" type="button">WebP로 전체 다운로드</button>
+          <button id="downloadPng" class="primary big" type="button">♡ PNG로 저장</button>
+          <button id="downloadWebp" class="secondary big" type="button">WebP로 저장</button>
         </div>
       </div>
     </section>
 
     <section class="features">
-      <article><span>01</span><h3>위치 정보 제거</h3><p>GPS 좌표와 촬영 위치가 들어 있는 메타데이터를 함께 제거합니다.</p></article>
-      <article><span>02</span><h3>브라우저에서 처리</h3><p>사진을 서버로 업로드하지 않습니다. 파일은 사용자의 기기에서만 처리됩니다.</p></article>
-      <article><span>03</span><h3>한 번에 여러 장</h3><p>여러 사진을 선택해 한꺼번에 정리하고 ZIP 파일로 받을 수 있습니다.</p></article>
+      <article><span>♡ 01</span><h3>위치 정보까지 깔끔하게</h3><p>GPS 좌표, 촬영 날짜, 카메라 정보 등 이미지에 붙어 있던 메타데이터를 제거해요.</p></article>
+      <article><span>♡ 02</span><h3>내 브라우저에서만</h3><p>사진을 서버로 전송하지 않아요. 파일은 내 기기 안에서 처리되고 바로 저장돼요.</p></article>
+      <article><span>♡ 03</span><h3>아이폰 사진도 OK</h3><p>HEIC·HEIF 사진을 브라우저에서 변환한 뒤 메타데이터를 제거할 수 있어요.</p></article>
     </section>
 
     <section class="note">
-      <strong>알아두세요</strong>
-      <p>이 도구는 이미지를 브라우저의 Canvas로 다시 인코딩해 메타데이터를 제거합니다. 따라서 결과 파일은 원본과 파일 형식·용량·압축 품질이 달라질 수 있습니다.</p>
+      <strong>작동 방식</strong>
+      <p>이미지를 브라우저에서 디코딩한 다음 Canvas로 새 파일을 만들어 메타데이터를 제거합니다. 결과 파일은 원본과 압축 방식이나 용량이 달라질 수 있어요. HEIC/HEIF는 브라우저에서 호환되는 경우 직접 처리하고, 지원되지 않는 경우 브라우저용 HEIC 변환기를 이용해 처리합니다.</p>
     </section>
   </main>
 
-  <footer>MetaClean · No upload · No tracking</footer>
+  <footer>pinkclean · no upload · no tracking ♡</footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script src="script.js"></script>
 </body>
