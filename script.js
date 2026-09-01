@@ -11,22 +11,34 @@ const downloadWebp = document.getElementById("downloadWebp");
 
 let items = [];
 
-selectBtn.addEventListener("click", e => { e.stopPropagation(); fileInput.click(); });
-dropzone.addEventListener("click", e => { if (e.target !== selectBtn) fileInput.click(); });
-dropzone.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") fileInput.click(); });
+selectBtn.addEventListener("click", e => { 
+  e.stopPropagation(); 
+  fileInput.click(); 
+});
+dropzone.addEventListener("click", e => { 
+  if (e.target !== selectBtn) fileInput.click(); 
+});
+dropzone.addEventListener("keydown", e => { 
+  if (e.key === "Enter" || e.key === " ") fileInput.click(); 
+});
 fileInput.addEventListener("change", () => addFiles([...fileInput.files]));
 
-["dragenter","dragover"].forEach(type => dropzone.addEventListener(type, e => {
+["dragenter", "dragover"].forEach(type => dropzone.addEventListener(type, e => {
   e.preventDefault(); dropzone.classList.add("drag");
 }));
-["dragleave","drop"].forEach(type => dropzone.addEventListener(type, e => {
+["dragleave", "drop"].forEach(type => dropzone.addEventListener(type, e => {
   e.preventDefault(); dropzone.classList.remove("drag");
 }));
 dropzone.addEventListener("drop", e => addFiles([...e.dataTransfer.files]));
 
 clearBtn.addEventListener("click", () => {
-  items.forEach(x => { if (x.url) URL.revokeObjectURL(x.url); if (x.resultUrl) URL.revokeObjectURL(x.resultUrl); });
-  items = []; fileInput.value = ""; render();
+  items.forEach(x => { 
+    if (x.url) URL.revokeObjectURL(x.url); 
+    if (x.resultUrl) URL.revokeObjectURL(x.resultUrl); 
+  });
+  items = []; 
+  fileInput.value = ""; 
+  render();
 });
 
 function addFiles(files) {
@@ -62,11 +74,10 @@ async function processItem(index) {
     item.webp = await canvasToBlob(canvas, "image/webp", .92);
     item.resultUrl = URL.createObjectURL(item.png);
     item.status = "done";
-    if (source instanceof Blob && source !== item.file) URL.revokeObjectURL(source instanceof File ? source : source);
+    if (source instanceof Blob && source !== item.file) URL.revokeObjectURL(source);
   } catch (err) {
     console.error(err);
     item.status = "error";
-    item.error = isHeic(item.file) ? "HEIC 변환에 실패했어요. Safari/Chrome을 최신 버전으로 사용해 주세요." : "이 이미지를 처리하지 못했어요.";
   }
   render();
 }
@@ -121,7 +132,7 @@ function render() {
       <div class="file-meta">${formatBytes(item.file.size)}${item.width ? ` · ${item.width}×${item.height}` : ""}${isHeic(item.file) ? " · HEIC 변환" : ""}</div>`;
     const status = document.createElement("div");
     status.className = "status" + (item.status === "error" ? " error" : "");
-    status.textContent = item.status === "done" ? "✓ 제거됨" : item.status === "error" ? "처리 실패" : "처리 중…";
+    status.textContent = item.status === "done" ? "✓ 제거 완료" : item.status === "error" ? "처리 실패" : "처리 중…";
     info.append(text, status);
     row.append(compare, info);
     list.appendChild(row);
@@ -168,10 +179,11 @@ async function downloadAll(format) {
   const blob = await zip.generateAsync({type:"blob", compression:"DEFLATE"});
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = `pinkclean-${ext}-${dateStamp()}.zip`;
+  a.download = `metaclean-${ext}-${dateStamp()}.zip`;
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 1500);
 }
+
 downloadPng.addEventListener("click", () => downloadAll("png"));
 downloadWebp.addEventListener("click", () => downloadAll("webp"));
 
@@ -183,4 +195,5 @@ function formatBytes(bytes) {
 }
 function dateStamp() { return new Date().toISOString().slice(0,10); }
 function escapeHtml(s) { return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c])); }
+
 render();
