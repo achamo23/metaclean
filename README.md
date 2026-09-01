@@ -1,29 +1,15 @@
-# pinkclean
+# Metaclean - EXIF Metadata Remover
 
-사진의 EXIF/메타데이터를 브라우저에서 제거하는 정적 웹사이트입니다.
+사진 속 개인정보(GPS 위치, 촬영 기기, 촬영 날짜 등) 메타데이터를 브라우저 상에서 안전하고 완벽하게 제거해주는 웹 서비스입니다.
 
-## 기능
-- 핑크/화이트 반응형 디자인
-- 원본 / 메타데이터 제거 결과 미리보기
-- JPG / JPEG / PNG / WebP / GIF / BMP
-- HEIC / HEIF 지원 (heic2any 사용)
-- 드래그 앤 드롭
-- 여러 파일 일괄 처리
-- PNG / WebP 다운로드
-- 여러 파일은 ZIP으로 다운로드
-- 서버 업로드 없이 브라우저에서 처리
-- `noindex,nofollow` + robots.txt로 검색엔진 노출 억제
+## ✨ 주요 기능
+- **100% 로컬 처리**: 서버로 사진을 업로드하지 않고 브라우저(Client-side) 내에서만 처리되어 완벽한 개인정보 보안을 유지합니다.
+- **다양한 포맷 지원**: JPG, JPEG, PNG, WebP, GIF, BMP 및 **HEIC/HEIF(아이폰 사진)** 완벽 지원.
+- **배치 처리 & ZIP 다운로드**: 여러 장의 사진을 한 번에 드래그&드롭하여 처리하고 한 번에 ZIP 압축 파일로 다운로드 가능.
 
-## GitHub Pages
-기존 repository의 파일을 아래처럼 교체하세요.
-
-index.html
-style.css
-script.js
-robots.txt
-
-Settings → Pages에서 main / root로 배포하면 됩니다.
-
-## 참고
-Canvas 재인코딩 방식이라 결과 이미지의 압축/색상 프로필/애니메이션 특성이 원본과 달라질 수 있습니다.
-HEIC 변환 라이브러리는 jsDelivr에서 로드합니다.
+## 🚀 깃허브 페이지(GitHub Pages) 배포 방법
+1. 이 리포지토리를 Fork 또는 Clone 합니다.
+2. `index.html` 및 `style.css` 파일이 루트 경로에 위치하도록 합니다.
+3. GitHub Repository Settings > **Pages** 탭으로 이동합니다.
+4. **Source**를 `Deploy from a branch`로 설정하고 `main` (또는 `master`) 브랜치를 선택 후 저장합니다.
+5. 몇 분 후 제공되는 URL을 통해 접속할 수 있습니다!
