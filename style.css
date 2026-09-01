@@ -1,0 +1,61 @@
+:root{
+  --ink:#171717;--muted:#737373;--line:#e7e5e4;--paper:#f7f6f2;
+  --accent:#1f6f58;--accent-dark:#175541;--white:#fff;--soft:#edf5f1;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans KR","DM Sans",sans-serif}
+button,input{font:inherit}
+.topbar{height:76px;display:flex;align-items:center;justify-content:space-between;max-width:1120px;margin:auto;padding:0 28px}
+.brand{display:flex;align-items:center;gap:10px;color:var(--ink);text-decoration:none;font-weight:800;letter-spacing:-.03em;font-size:19px}
+.brand-mark{width:31px;height:31px;border-radius:9px;background:var(--ink);color:#fff;display:grid;place-items:center;font:700 15px "DM Sans"}
+.privacy-pill{font-size:12px;font-weight:600;color:var(--accent);background:var(--soft);padding:7px 11px;border-radius:99px}
+.hero{text-align:center;padding:76px 20px 48px}
+.eyebrow{font:700 11px "DM Sans";letter-spacing:.18em;color:var(--accent);margin-bottom:18px}
+.hero h1{font-size:clamp(42px,7vw,72px);line-height:1.04;letter-spacing:-.065em;margin:0;font-weight:800}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero p{margin:25px 0 0;color:var(--muted);line-height:1.8;font-size:15px}
+.app-card{width:min(900px,calc(100% - 32px));margin:auto;background:var(--white);border:1px solid var(--line);border-radius:24px;box-shadow:0 18px 55px rgba(0,0,0,.06);padding:16px}
+.dropzone{min-height:330px;border:1.5px dashed #c9c7c2;border-radius:17px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;transition:.2s;background:#fdfdfc}
+.dropzone.drag{border-color:var(--accent);background:var(--soft);transform:scale(.995)}
+.upload-icon{width:58px;height:58px;border-radius:18px;background:#f0eee9;display:grid;place-items:center;font-size:27px;color:var(--accent);margin-bottom:19px}
+.dropzone h2{margin:0;font-size:20px;letter-spacing:-.03em}
+.dropzone p{margin:7px 0 18px;color:var(--muted);font-size:13px}
+.dropzone small{margin-top:14px;color:#999;font-size:11px}
+.primary,.secondary,.text-btn{border:0;cursor:pointer;transition:.18s}
+.primary{background:var(--ink);color:#fff;padding:12px 21px;border-radius:10px;font-weight:700;font-size:13px}
+.primary:hover{background:#303030;transform:translateY(-1px)}
+.secondary{background:#f0efeb;color:var(--ink);padding:12px 21px;border-radius:10px;font-weight:700;font-size:13px}
+.secondary:hover{background:#e7e5df}
+.toolbar{display:flex;justify-content:space-between;align-items:center;padding:18px 5px 10px;font-size:13px}
+.text-btn{background:none;color:#a13d3d;padding:5px;font-size:12px}
+.file-list{display:grid;gap:9px}
+.file-item{display:grid;grid-template-columns:54px 1fr auto;align-items:center;gap:13px;border:1px solid var(--line);border-radius:13px;padding:8px 12px;background:#fff}
+.thumb{width:54px;height:54px;border-radius:9px;object-fit:cover;background:#f0efeb}
+.file-name{font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.file-meta{font-size:11px;color:#999;margin-top:3px}
+.status{font-size:11px;font-weight:700;color:var(--accent);white-space:nowrap}
+.status.error{color:#a13d3d}
+.actions{margin-top:14px;border-radius:15px;background:var(--soft);padding:19px}
+.action-head h3{margin:0;font-size:15px}
+.action-head p{margin:5px 0 15px;font-size:11px;color:#668078}
+.action-buttons{display:flex;gap:9px;flex-wrap:wrap}
+.big{flex:1;min-width:190px;padding:13px 16px}
+.features{width:min(900px,calc(100% - 32px));margin:55px auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.features article{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px}
+.features span{font:700 11px "DM Sans";color:var(--accent)}
+.features h3{font-size:15px;margin:15px 0 7px}
+.features p{font-size:12px;line-height:1.7;color:var(--muted);margin:0}
+.note{width:min(900px,calc(100% - 32px));margin:17px auto 70px;border-top:1px solid var(--line);padding-top:20px;color:#777;font-size:11px;line-height:1.7}
+.note strong{color:#444}
+.note p{margin:5px 0}
+footer{text-align:center;border-top:1px solid var(--line);padding:25px;color:#aaa;font:11px "DM Sans"}
+.hidden{display:none!important}
+@media(max-width:650px){
+  .topbar{height:65px;padding:0 17px}.privacy-pill{font-size:10px}
+  .hero{padding:52px 18px 34px}.hero h1{font-size:44px}.desktop{display:none}
+  .app-card{width:calc(100% - 20px);padding:9px;border-radius:18px}.dropzone{min-height:310px}
+  .features{grid-template-columns:1fr;margin-top:35px;width:calc(100% - 20px)}
+  .note{width:calc(100% - 20px);margin-bottom:45px}
+  .file-item{grid-template-columns:46px 1fr}.thumb{width:46px;height:46px}.status{grid-column:2}
+}
